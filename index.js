@@ -1,6 +1,7 @@
 // Arquivo principal
 import express from "express";
 import * as dotenv from "dotenv";
+import {uuid} from 'uuidv4';
 
 //habilitar o servidor a ter variaveis de ambientes
 dotenv.config();
@@ -14,6 +15,7 @@ app.use(express.json());
 //Banco de Dados
 const bancoDados = [
     {
+        id:"b535d1f9-b087-47c7-a3f4-b88fa6241a58",
         name: "Ana Aleixo",
         age: "45",
         role: "Aluna",
@@ -28,7 +30,8 @@ const bancoDados = [
 // NOVO BANCO DE DADOS- PROJETO 03
 const bancoDadosCat =[
     {
-        Processo: "0000100-33.2022.0.00.7000",
+        id:"6dd37b20-5eff-4c99-bfb9-5280866c55ec",
+        processo: "0000100-33.2022.0.00.7000",
         nome: "Acessibilidade",
         data: "DEZ/2020",
         unidade: "PE-SOF",
@@ -41,7 +44,8 @@ const bancoDadosCat =[
     
 
     {
-        Processo: "0000100-32.2022.0.00.7000",
+        id: "fe82c49a-3534-4437-93bd-ec76a4e53d72",
+        processo: "0000100-32.2022.0.00.7000",
         nome: "Acessibilidade",
         data: "DEZ/2020",
         unidade: "PE-SOF",
@@ -52,7 +56,8 @@ const bancoDadosCat =[
     },
 
     {
-        Processo: "0000100-30.2022.0.00.7000",
+        id:"f0ebbdcd-79cc-4fda-920a-a483c981662e",
+        processo: "0000100-30.2022.0.00.7000",
         nome: "Acessibilidade",
         data: "DEZ/2020",
         unidade: "PE-SOF",
@@ -95,6 +100,43 @@ app.get("/cat-users", (req, res) =>{
     return res.status(200).json(users)
 }
 )
+
+// POST - Creat
+app.post("/new-user", (req, res) => {
+//console.log(req.body) -> é o corpo da minha requisição(json)
+//console.log(req.body.name)-> é apenas o nome
+
+    const form = req.body;
+
+    bancoDados.push(form);
+
+    return res.status(201).json(bancoDados);
+})
+
+// TREINANDO POST - Creat
+app.post("new-user",(req, res) => {
+
+    const form = req.body;
+
+    bancoDadosCat.push(form);
+
+    return res.status(202).jason(bancoDadosCat);
+})
+
+//DELETE - delete a user
+app.delete("/delete/:id", (req, res) => {
+    console.log(req.params.id); // req.params -> {} por isso ele pode ser DESCONSTUÍDO
+    const { id } = req.params; // eu estou DESCONSTRUINDO o req.params e ABRINDO o obj e acessando pelo NOME da chave
+
+    const deleteById = bancoDados.find((user) => user.id ===id);
+    console.log (deleteById);
+    const index = bancoDados.indexOf(deleteById);
+    console.log(index);
+
+    bancoDados.splice(index, 1);
+
+    return res. status(200).json(bancoDados);
+});
 
 // o servidor supindo para o ar
 app.listen(27017, () => {
