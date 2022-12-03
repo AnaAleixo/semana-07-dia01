@@ -1,12 +1,12 @@
 // Arquivo principal
-import express from "express"
-import * as dotenv from "dotenv"
+import express from "express";
+import * as dotenv from "dotenv";
 
 //habilitar o servidor a ter variaveis de ambientes
-dotenv.config()
+dotenv.config();
 
 //instanciar a variável que vai ficar responsável pelo nosso servidor -> app
-const app = express ()
+const app = express ();
 
 //configurar o servidor para aceitar, enviar e receber arquivo em json
 app.use(express.json());
@@ -25,9 +25,12 @@ app.use(express.json());
 
 
 // o servidor supindo para o ar
+app.listen(27017, () => {
+    console.log("App up and running on port http://localhost:8080");
+
 app.listen(process.env.PORT, () => {
     console.log(
         `App up and running on port http://localhost:${process.env.PORT}`
     );
 });
-
+});
