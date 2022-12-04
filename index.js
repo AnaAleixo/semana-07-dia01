@@ -88,7 +88,7 @@ const bancoDadosCat =[
         return res.status(200).json(bemVindo)
 
     });
-
+*/
     //ATIVIDADE : CRIAR ROTA QUE RETORNE O BANCO DE DADOS - > ROTA - > "/all-users" verbo:GET
 
     app.get("/all-users", (req, res) => {
@@ -166,7 +166,7 @@ app.put("/edit/:id", (req, res) => {
 
     return res.status(200).json(bancoDados[index]);
 }) 
-*/
+
 
 // o servidor supindo para o ar
 /*app.listen(27017, () => {
