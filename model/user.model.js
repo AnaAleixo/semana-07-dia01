@@ -1,6 +1,7 @@
-import { Schema, model } from "mongoose"
+import { Schema, model } from "mongoose";
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+    {
 
     name: {
         type: String,
@@ -12,7 +13,7 @@ const userSchema = new Schema({
 
     },
     age: {
-        type: Namber,
+        type: Number,
         min: 18,
         max: 100,
     
@@ -26,7 +27,7 @@ const userSchema = new Schema({
     },
 
     role: {
-        type:String,
+        type: String,
         enum:["professora", "aluno","ta"],
         default:"aluno",
     },
@@ -34,15 +35,19 @@ const userSchema = new Schema({
         type: Boolean,
         default: true,
     },
-    tasks: [{type: String}],
-    birth:{type: Date},
-   },
+    date: { type: Date },
+    address: {
+      city: { type: String },
+      state: { type: String },
+    },
 
-   {
-    timestamps:true,
-   }
+    tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+  },
+  {
+    timestamps: true,
+  }
 );
 
-const UserModel = model("user", userSchema)
+const UserModel = model("User", userSchema);
 
-export  default UserModel
+export default UserModel;

@@ -1,9 +1,10 @@
-import express from "express"
+import express from "express";
+import UserModel from "../model/user.model.js";
 
 const userRoute =express.Router();
 
 
-//Banco de Dados
+/*Banco de Dados
 const bancoDados = [
     {
         id:"b535d1f9-b087-47c7-a3f4-b88fa6241a58",
@@ -16,8 +17,26 @@ const bancoDados = [
             "E fazer todas as tarefas! Tô lascada!"
         ]
     }
-]
+];
+*/
 
+//CREATE - MONGODB (Criando rotas no Mongo)
+userRoute.post("/creat-user", async (req, res) => {
+    try {
+
+        const form = req.body;
+
+        const newUser = await UserModel.create(form);
+
+        return res.status(201).json(newUser);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({msg:"Algo deu errado na criação do usuário"})
+    }
+} );
+
+
+/* EXEMPLOS DE ROTAS DA AULA
 //CRIAÇÃO DE ROTAS
 userRoute.get("/enap", (req, res) =>{
         //req- request - requisição do cliente, é o que o cliente manda para o servidor
@@ -29,6 +48,7 @@ userRoute.get("/enap", (req, res) =>{
 
     });
 
+
 //ATIVIDADE : CRIAR ROTA QUE RETORNE O BANCO DE DADOS - > ROTA - > "/all-users" verbo:GET
 userRoute.get("/all-users", (req, res) => {
 
@@ -37,6 +57,8 @@ userRoute.get("/all-users", (req, res) => {
         return res.status(200).json(users)
 
     })
+*/
+
 
 // POST - Creat
 userRoute.post("/new-user", (req, res) => {
