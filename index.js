@@ -1,7 +1,9 @@
 // Arquivo principal
 import express from "express";
 import * as dotenv from "dotenv";
+import connect from "./config/db.config.js";
 import {uuid} from 'uuidv4';
+import userRoute from "./routes/user.routes.js";
 
 //habilitar o servidor a ter variaveis de ambientes
 dotenv.config();
@@ -9,9 +11,14 @@ dotenv.config();
 //instanciar a variável que vai ficar responsável pelo nosso servidor -> app
 const app = express ();
 
-//configurar o servidor para aceitar, enviar e receber arquivo em json
+//configurar o servidor para aceitar, enviar e receber arquivo em JSON
 app.use(express.json());
 
+//conectando com o banco de dados
+connect()
+app.use("/user", userRoute);
+
+/* Resumão da Aula
 //Banco de Dados
 const bancoDados = [
     {
@@ -129,6 +136,11 @@ app.delete("/delete/:id", (req, res) => {
     const { id } = req.params; // eu estou DESCONSTRUINDO o req.params e ABRINDO o obj e acessando pelo NOME da chave
 
     const deleteById = bancoDados.find((user) => user.id ===id);
+
+    if (!deleteById){
+        return res.status(400).json({msg: "Usuário não encontrado"})
+    }
+
     console.log (deleteById);
     const index = bancoDados.indexOf(deleteById);
     console.log(index);
@@ -138,13 +150,31 @@ app.delete("/delete/:id", (req, res) => {
     return res. status(200).json(bancoDados);
 });
 
-// o servidor supindo para o ar
-app.listen(27017, () => {
-    console.log("App up and running on port http://localhost:8080");
+// PUT - Editar
+app.put("/edit/:id", (req, res) => {
 
+    const { id }= req.params;
+    const editUser = bancoDados.find((user) => user.id === id)
+
+
+     const index = bancoDados.indexOf(editUser) //0
+
+    bancoDados[index] = {
+        ...editUser,
+        ...req.body
+    }
+
+    return res.status(200).json(bancoDados[index]);
+}) 
+*/
+
+// o servidor supindo para o ar
+/*app.listen(27017, () => {
+    console.log("App up and running on port http://localhost:8080");*/
+
+// o servidor supindo para o ar
 app.listen(process.env.PORT, () => {
     console.log(
         `App up and running on port http://localhost:${process.env.PORT}`
     );
-});
 });
