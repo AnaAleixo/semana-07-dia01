@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import connect from "./config/db.config.js";
 import {uuid} from 'uuidv4';
 import userRoute from "./routes/user.routes.js";
+import taskRoute from './routes/task.routes.js';
 
 //habilitar o servidor a ter variaveis de ambientes
 dotenv.config();
@@ -15,8 +16,12 @@ const app = express ();
 app.use(express.json());
 
 //conectando com o banco de dados
-connect()
+connect();
 app.use("/user", userRoute);
+
+app.use("/task", taskRoute);
+
+
 
 /* Resumão da Aula
 //Banco de Dados

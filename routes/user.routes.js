@@ -20,7 +20,7 @@ const bancoDados = [
 */
 
 //CREATE - MONGODB (Criando rotas no Mongo)
-userRoute.post("/creat-user", async (req, res) => {
+userRoute.post("/create-user", async (req, res) => {
   try {
     const form = req.body;
 
@@ -55,7 +55,7 @@ userRoute.get("/oneUser/:id", async (req, res) => {
 
     // const user = await UserModel.find({_id: id})
 
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate("tasks");
 
     return res.status(200).json(user);
   } catch (error) {
@@ -71,7 +71,19 @@ userRoute.delete("/delete/:id", async (req, res) => {
 
     const deletedUser = await UserModel.findByIdAndDelete(id);
 
+    const users = await UserModel.find();
+    /*
     return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});*/
+
+    //DELETE todas as TAREFAS que o usuário é dono - - MONGODB
+    await TaskModel.deleteMany({ user: id });
+
+    return res.status(200).json(users);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error.errors);
@@ -80,23 +92,23 @@ userRoute.delete("/delete/:id", async (req, res) => {
 
 //EDIT - - MONGODB
 userRoute.put("/edit/:id", async (req, res) => {
-    try {
-      const { id } = req.params;
-  
-      const updatedUser = await UserModel.findByIdAndUpdate(
-        id,
-        { ...req.body },
-        { new: true, runValidators: true }
-      );
-  
-      return res.status(200).json(updatedUser);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json(error.errors);
-    }
-  });
+  try {
+    const { id } = req.params;
 
-  export default userRoute;
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
+
+export default userRoute;
 /* EXEMPLOS DE ROTAS DA AULA
 //CRIAÇÃO DE ROTAS
 userRoute.get("/enap", (req, res) =>{
