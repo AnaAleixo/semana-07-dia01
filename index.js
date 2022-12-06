@@ -95,7 +95,7 @@ const bancoDadosCat =[
     });
 */
     //ATIVIDADE : CRIAR ROTA QUE RETORNE O BANCO DE DADOS - > ROTA - > "/all-users" verbo:GET
-
+/*
     app.get("/all-users", (req, res) => {
 
         const users = bancoDados

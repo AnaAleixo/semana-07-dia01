@@ -3,6 +3,9 @@ import TaskModel from "../model/task.model.js";
 import UserModel from "../model/user.model.js";
 import bcrypt from "bcrypt";
 import generateToken from "../config/jwt.config.js";
+import isAuth from "../middlewares/isAuth.js";
+import attachCurrentUser from "../middlewares/attachCurrentUser.js";
+
 
 const userRoute = express.Router();
 
@@ -88,7 +91,17 @@ userRoute.post("/login", async (req, res) => {
 });
 
 //profile
+userRoute.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
+  try {
 
+    //req.currentUser -> veio do middle attachCurrentUser
+
+    return res.status(200).json(req.currentUser);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
 
 
 
@@ -129,14 +142,16 @@ userRoute.post("/create-user", async (req, res) => {
 //GET ALL USER - MONGODB
 userRoute.get("/all-users", async (req, res) => {
   try {
-    const users = await UserModel.find({}, { _v: 0, updateAt: 0 }).sort({
-      age: 1,
-    });
+    const users = await UserModel.find({}, { __v: 0, updatedAt: 0 })
+      .sort({
+        age: 1,
+      })
+      .limit(100);
 
-    return res.status(200).json(users);
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
-    return res.status(500).json(error.erros);
+    return res.status(500).json(error.errors);
   }
 });
 
@@ -146,8 +161,11 @@ userRoute.get("/oneUser/:id", async (req, res) => {
     const { id } = req.params;
 
     // const user = await UserModel.find({_id: id})
-
     const user = await UserModel.findById(id).populate("tasks");
+
+    if (!user) {
+      return res.status(400).json({ msg: " Usuário não encontrado!" });
+    }
 
     return res.status(200).json(user);
   } catch (error) {
@@ -155,6 +173,7 @@ userRoute.get("/oneUser/:id", async (req, res) => {
     return res.status(500).json(error.errors);
   }
 });
+
 
 //DELETE - - MONGODB
 userRoute.delete("/delete/:id", async (req, res) => {
@@ -163,16 +182,13 @@ userRoute.delete("/delete/:id", async (req, res) => {
 
     const deletedUser = await UserModel.findByIdAndDelete(id);
 
-    const users = await UserModel.find();
-    /*
-    return res.status(200).json(user);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(error.errors);
-  }
-});*/
+    if (!deletedUser) {
+      return res.status(400).json({ msg: "Usuário não encontrado!" });
+    }
 
-    //DELETE todas as TAREFAS que o usuário é dono - - MONGODB
+    const users = await UserModel.find();
+
+    //deletar TODAS as tarefas que o usuário é dono
     await TaskModel.deleteMany({ user: id });
 
     return res.status(200).json(users);
@@ -181,6 +197,16 @@ userRoute.delete("/delete/:id", async (req, res) => {
     return res.status(500).json(error.errors);
   }
 });
+
+    /*
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});*/
+
+ 
 
 //EDIT - - MONGODB
 userRoute.put("/edit/:id", async (req, res) => {
